@@ -168,6 +168,7 @@ router.put('/data/:id', (req, res) => {
 
 router.delete('/data/:id', (req, res) => {
     var id = req.params.id
+    console.log(id)
     Letters.findOneAndDelete({ _id: id }, function (err, data) {
         if (err) res.sendStatus(403)
         res.status(201).json({
