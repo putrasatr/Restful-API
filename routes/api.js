@@ -23,7 +23,7 @@ router.post('/users/register', function (req, res, next) {
     Users.findOne({ email: email }, function (err, data) {
         if (err) return handleError(err);
         if (data) {
-            res.status(201).json({message:'Email already exists'})
+            res.status(201).json({ message: 'Email already exists' })
         } else {
             if (password === retypepassword) {
                 Users.create({ email, password, token }, function (err, data) {
@@ -35,7 +35,7 @@ router.post('/users/register', function (req, res, next) {
                     })
                 })
             } else {
-                res.status(201).json({message:"Password not match"})
+                res.status(201).json({ message: "Password not match" })
             }
         }
     })
@@ -90,7 +90,7 @@ router.post('/users/check', verifyToken, function (req, res, next) {
         }
 
     } catch (e) {
-    res.status(201).json({ "msg": false, "valid": false })
+        res.status(201).json({ "msg": false, "valid": false })
     }
 });
 
@@ -292,7 +292,7 @@ router.get("/datadate/:id", (req, res) => {
 
 //Add
 router.post('/maps', function (req, res, next) {
-    var { title,lang,lat } = req.body;
+    var { title, lang, lat } = req.body;
     Maps.create({ title, lat, lang }, function (err, response) {
         if (err) res.sendStatus(403)
         res.status(201).send({
@@ -300,7 +300,7 @@ router.post('/maps', function (req, res, next) {
             message: "data have been added",
             data: {
                 _id: response.id,
-                title:response.title,
+                title: response.title,
                 lat: response.lat,
                 lang: response.lang
             }
@@ -310,8 +310,8 @@ router.post('/maps', function (req, res, next) {
 
 //Browse
 router.post('/maps/search', function (req, res, next) {
-    var { title,lang,lat } = req.body;
-    Maps.find({ $or: [{ title,lat, lang }, { title }, { lat },{lang}] }, function (err, response) {
+    var { title, lang, lat } = req.body;
+    Maps.find({ $or: [{ title, lat, lang }, { title }, { lat }, { lang }] }, function (err, response) {
         if (err) res.sendStatus(403)
         if (response.length > 0) {
             res.send({
@@ -387,17 +387,14 @@ router.get("/maps/:id", (req, res) => {
 
 
 function verifyToken(req, res, next) {
-    const bearerHeader = req.headers['token'];
-    console.log(bearerHeader)
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
+    const Authentication = req.headers['token'];
+    if (Authentication) {
+        const token = bearerHeader.split(' ')[1];
+        req.token = token;
         next();
-    } else {
-        res.send({ message: "Token Undefined!" });
+        return
     }
-
+    res.send({ message: "Token Undefined!" });
 }
 
 
